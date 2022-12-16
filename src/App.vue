@@ -66,6 +66,7 @@
           </v-col>
           <v-col id="inputs" col="8">
             <v-text-field
+              background-color="white"
               label="Открытый текст"
               v-model="inputCipher"
               outlined
@@ -75,6 +76,7 @@
             >
             </v-text-field>
             <v-text-field
+              background-color="white"
               label="Зашифрованный текст"
               v-model="inputDecipher"
               outlined
@@ -83,6 +85,7 @@
             >
             </v-text-field>
             <v-text-field
+              background-color="white"
               v-if="cipher2Flag || cipher3Flag"
               label="a"
               v-model="paramA"
@@ -92,8 +95,9 @@
             >
             </v-text-field>
             <v-text-field
+              background-color="white"
               v-if="cipher3Flag"
-              label="Keyword"
+              label="Ключевое слово"
               v-model="paramKeyword"
               outlined
               dense
@@ -102,6 +106,7 @@
             </v-text-field>
 
             <v-text-field
+              background-color="white"
               v-if="cipher2Flag"
               label="b"
               v-model="paramB"
@@ -112,8 +117,9 @@
             </v-text-field>
 
             <v-text-field
+              background-color="white"
               v-if="cipher1Flag || cipher4Flag || cipher7Flag"
-              label="Key"
+              label="Ключ"
               v-model="paramKey"
               outlined
               dense
@@ -137,12 +143,15 @@
               >Расшифровать</v-btn
             >
             <v-text-field
+              
+              background-color="white"
               label="Зашифрованный/Расшифрованный текст"
               v-model="output"
               outlined
               dense
               class="shrink"
               style="margin-top: 30px"
+              disabled
             >
             </v-text-field>
           </v-col>
@@ -353,7 +362,39 @@ export default {
           this.output = str;
 
       } else if (this.cipher6Flag) {
+        let str = this.inputCipher;
+        let result = "";
+        function encryptHelper(openText){
+          let crypt1 = "";
+          let crypt2 = "";
+          let crypt3 = "";
 
+          for (let i = 0;; i++) {
+            if(i*4 >= openText.length){
+              break;
+            }
+            crypt3 += openText.charAt(i*4)
+          }
+
+          for (let i = 0;; i++) {
+            if((1+i*2) >= openText.length){
+              break;
+            }
+            crypt2 += openText.charAt(1+i*2)
+          }
+
+          for (let i = 0;; i++) {
+            if((2+i*4) >= openText.length){
+              break;
+            }
+            crypt1 += openText.charAt(2+i*4)
+          }
+
+          return crypt1 + crypt2 + crypt3
+        }
+        
+        result = encryptHelper(str);
+        this.output = result;
       } else if (this.cipher7Flag) {
         let result = "";
         let str = this.inputCipher.toUpperCase();
@@ -470,11 +511,8 @@ export default {
 
           let t1 = crypt.length - (crypt.length % 3);
           let t2 = crypt.length;
-          console.log(t1,t2)
           end = crypt.slice(t1,t2)
-          console.log("end",end)
           openText = crypt.slice(0,t1);
-          console.log("OT",openText)
 
           for (let i = 0; i < countDiv3; i++) {
             crypt1 += openText.charAt(3 * i + 2); 
@@ -498,7 +536,72 @@ export default {
         this.output = str;
 
       } else if (this.cipher6Flag) {
-        
+        let str = this.inputDecipher;
+        let result = "";
+
+        function decryptHelper(crypt){
+          let openText = "";
+
+          let crypt1 = "";
+          let crypt2 = "";
+          let crypt3 = "";
+
+          let range1 = Math.floor((((crypt.length) - 2) / 5)) + 1;
+          let range2 = Math.floor(crypt.length / 2);
+
+          for (let i = 0; i < range1; i++) {
+            crypt3 += crypt.charAt(i)
+          }
+
+          for (let i = range1; i < range1 + range2; i++) {
+            crypt2 += crypt.charAt(i)
+          }
+
+          for (let i = range1 + range2; i < crypt.length; i++) {
+            crypt1 += crypt.charAt(i)
+          }
+
+          let prevIdent = 1;
+          let ident = 1;
+          let i1 = 0;
+          let i2 = 0;
+          let i3 = 0;
+
+          for (let i = 0; i < crypt.length; i++) {
+            switch(ident){
+              case 1:
+                openText+=crypt1.charAt(i1);
+                i1++;
+                prevIdent=1;
+                ident=2;
+                break;
+              case 2:
+                openText+=crypt2.charAt(i2);
+                if(prevIdent === 1){
+                  ident = 3;
+                } else {
+                  ident = 1;
+                }
+                i2++;
+                break;
+              case 3:
+                openText+=crypt3.charAt(i3);
+                i3++;
+                prevIdent = 3;
+                ident = 2;
+                break;
+            }
+            
+          }
+
+          return openText;
+
+        }
+
+        result = decryptHelper(str);
+        this.output = result
+
+
       } else if (this.cipher7Flag) {
         let result = "";
         let str = this.inputDecipher.toUpperCase();
