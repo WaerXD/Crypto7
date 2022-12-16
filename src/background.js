@@ -13,16 +13,17 @@ protocol.registerSchemesAsPrivileged([
 async function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
-    width: 800,
+    width: 990,
     height: 600,
-    icon: __dirname + "/assets/logo.jpg",
+    icon: __dirname + "/assets/logo.ico",
     webPreferences: {
       
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
-    }
+    }, 
+    resizable: false
   })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
