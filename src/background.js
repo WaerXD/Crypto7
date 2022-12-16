@@ -38,7 +38,7 @@ async function createWindow() {
 }
 
 
-app.getFileIcon(__dirname + "/assets/logo.ico")
+app.getFileIcon(__dirname + "/assets/logo.icns")
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
   // On macOS it is common for applications and their menu bar
