@@ -15,7 +15,7 @@ async function createWindow() {
   const win = new BrowserWindow({
     width: 990,
     height: 600,
-    icon: __dirname + "/assets/logo.ico",
+    icon: "Icon.ico",
     webPreferences: {
       
       // Use pluginOptions.nodeIntegration, leave this alone
@@ -37,8 +37,6 @@ async function createWindow() {
   }
 }
 
-
-app.getFileIcon(__dirname + "/assets/logo.icns")
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
   // On macOS it is common for applications and their menu bar
