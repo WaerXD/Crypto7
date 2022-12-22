@@ -8,12 +8,13 @@
       <v-container>
         <v-layout row wrap>
           <v-col id="buttons" col="4">
+            <div style="color: white; border-radius: 5px; width:30%; background-color:#eb4634; text-align: center;">Шифры Замены</div>
             <v-btn
               id="Cipher1"
               color="#101357"
               class="white--text"
               @click="cipher1()"
-              >Шифр Замены №1</v-btn
+              >Простой шифр Цезаря</v-btn
             >
             <br />
             <v-btn
@@ -21,7 +22,7 @@
               color="#101357"
               class="white--text"
               @click="cipher2()"
-              >Шифр Замены №2</v-btn
+              >Шифр Цезаря в Аффинной системе</v-btn
             >
             <br />
             <v-btn
@@ -29,7 +30,7 @@
               color="#101357"
               class="white--text"
               @click="cipher3()"
-              >Шифр Замены №3</v-btn
+              >Шифр Цезаря с кодовым словом</v-btn
             >
             <br />
             <v-btn
@@ -37,15 +38,17 @@
               color="#101357"
               class="white--text"
               @click="cipher4()"
-              >Шифр Замены №4</v-btn
+              >Шифр Вижинера</v-btn
             >
             <br />
+            <br />
+            <div style="color: white; border-radius: 5px; width:40%; background-color:#eb4634;text-align: center;">Шифры перестановки</div>
             <v-btn
               id="Cipher5"
               color="#101357"
               class="white--text"
               @click="cipher5()"
-              >Шифр Перестановки №1</v-btn
+              >Горизонт-Вертикаль</v-btn
             >
             <br />
             <v-btn
@@ -53,9 +56,11 @@
               color="#101357"
               class="white--text"
               @click="cipher6()"
-              >Шифр Перестановки №2</v-btn
+              >Диагональ</v-btn
             >
             <br />
+            <br />
+            <div style="color: white; border-radius: 5px; width:40%; background-color:#eb4634;text-align: center;">Шифр Гаммирования</div>
             <v-btn
               id="Cipher7"
               color="#101357"
@@ -143,7 +148,6 @@
               >Расшифровать</v-btn
             >
             <v-text-field
-              
               background-color="white"
               label="Зашифрованный/Расшифрованный текст"
               v-model="output"
@@ -266,22 +270,24 @@ export default {
         }
         this.output = result;
       } else if (this.cipher3Flag) {
-        let newAlph = "                          ".split('');
+        let newAlph = "                          ".split("");
         let position = parseInt(this.paramA);
         let filledLetters = 0;
         let indexKeyWord = 0;
         let str = this.inputCipher.toUpperCase();
         let result = "";
 
-        while(filledLetters < 26){
-          if(indexKeyWord < this.paramKeyword.length){
+        while (filledLetters < 26) {
+          if (indexKeyWord < this.paramKeyword.length) {
             newAlph[position % 26] = this.paramKeyword.charAt(indexKeyWord++);
             position++;
           }
-          if(indexKeyWord == this.paramKeyword.length){
-            if(!newAlph.join('').includes(this.alphabet.charAt(filledLetters))){
-              newAlph[position%26] = this.alphabet.charAt(filledLetters);
-              position++
+          if (indexKeyWord == this.paramKeyword.length) {
+            if (
+              !newAlph.join("").includes(this.alphabet.charAt(filledLetters))
+            ) {
+              newAlph[position % 26] = this.alphabet.charAt(filledLetters);
+              position++;
             }
             filledLetters++;
           }
@@ -290,14 +296,13 @@ export default {
         for (let i = 0; i < str.length; i++) {
           let curChar = str.charAt(i);
           let alphIndex = this.alphabet.indexOf(curChar);
-          if(this.alphabet.includes(curChar)){
-            result += newAlph.join('').charAt(alphIndex)
+          if (this.alphabet.includes(curChar)) {
+            result += newAlph.join("").charAt(alphIndex);
           } else {
             result += curChar;
           }
         }
         this.output = result;
-
       } else if (this.cipher4Flag) {
         let str = this.inputCipher.toUpperCase();
         let result = "";
@@ -305,94 +310,99 @@ export default {
           let curChar = str.charAt(i);
           let alphIndex = this.alphabet.indexOf(curChar);
 
-          if (this.alphabet.includes(curChar)){
-            result += this.alphabet.charAt((alphIndex + 
-                      this.alphabet.charCodeAt(this.paramKey.charCodeAt(i % this.paramKey.length) % 26)) 
-                      % this.alphabet.length)
-                                          
-          } else{
+          if (this.alphabet.includes(curChar)) {
+            result += this.alphabet.charAt(
+              (alphIndex +
+                this.alphabet.charCodeAt(
+                  this.paramKey.charCodeAt(i % this.paramKey.length) % 26
+                )) %
+                this.alphabet.length
+            );
+          } else {
             result += curChar;
           }
         }
         this.output = result;
-
       } else if (this.cipher5Flag) {
-          let str = this.inputCipher;
-          let sizeStr = str.length;
-          let countDiv3 = Math.floor(sizeStr / 3);
-
-          function encryptHelper(countDiv3, openText, b){
-            let crypt = "";
-            let crypt1 = "";
-            let crypt2 = "";
-            let crypt3 = "";
-
-            for (let j = 0; j < countDiv3; j++) {
-              crypt1 += openText.charAt(j)
-              crypt2 += openText.charAt(j + countDiv3)
-              crypt3 += openText.charAt(j + 2 * countDiv3)
-            }
-
-            let cryptArray1 = crypt1.split('');
-            let cryptArray2 = crypt2.split('');
-            let cryptArray3 = crypt3.split('');
-
-            for (let i1 = 0, i2 = 0, i3 = 0; i1 < countDiv3 && i2 < countDiv3 && i3 < countDiv3; i1++, i2++, i3++){
-              crypt += cryptArray3[i3];
-              crypt += cryptArray2[i2];
-              crypt += cryptArray1[i1];
-            }
-
-            if(b){
-              let t1 = openText.length - (openText.length % 3); //3
-              let t2 = openText.length //4
-              crypt = crypt.slice(0, t1) + openText.slice(t1,t2) + crypt.slice(t2)
-            }
-
-            return crypt;
-
-          }
-
-          if(sizeStr % 3 === 0){
-            str = encryptHelper(countDiv3, this.inputCipher, false);
-          } else if (sizeStr > 3){
-            str = encryptHelper(countDiv3, this.inputCipher, true )
-          }
-
-          this.output = str;
-
-      } else if (this.cipher6Flag) {
         let str = this.inputCipher;
-        let result = "";
-        function encryptHelper(openText){
+        let sizeStr = str.length;
+        let countDiv3 = Math.floor(sizeStr / 3);
+
+        function encryptHelper(countDiv3, openText, b) {
+          let crypt = "";
           let crypt1 = "";
           let crypt2 = "";
           let crypt3 = "";
 
-          for (let i = 0;; i++) {
-            if(i*4 >= openText.length){
-              break;
-            }
-            crypt3 += openText.charAt(i*4)
+          for (let j = 0; j < countDiv3; j++) {
+            crypt1 += openText.charAt(j);
+            crypt2 += openText.charAt(j + countDiv3);
+            crypt3 += openText.charAt(j + 2 * countDiv3);
           }
 
-          for (let i = 0;; i++) {
-            if((1+i*2) >= openText.length){
-              break;
-            }
-            crypt2 += openText.charAt(1+i*2)
+          let cryptArray1 = crypt1.split("");
+          let cryptArray2 = crypt2.split("");
+          let cryptArray3 = crypt3.split("");
+
+          for (
+            let i1 = 0, i2 = 0, i3 = 0;
+            i1 < countDiv3 && i2 < countDiv3 && i3 < countDiv3;
+            i1++, i2++, i3++
+          ) {
+            crypt += cryptArray3[i3];
+            crypt += cryptArray2[i2];
+            crypt += cryptArray1[i1];
           }
 
-          for (let i = 0;; i++) {
-            if((2+i*4) >= openText.length){
-              break;
-            }
-            crypt1 += openText.charAt(2+i*4)
+          if (b) {
+            let t1 = openText.length - (openText.length % 3); //3
+            let t2 = openText.length; //4
+            crypt =
+              crypt.slice(0, t1) + openText.slice(t1, t2) + crypt.slice(t2);
           }
 
-          return crypt1 + crypt2 + crypt3
+          return crypt;
         }
-        
+
+        if (sizeStr % 3 === 0) {
+          str = encryptHelper(countDiv3, this.inputCipher, false);
+        } else if (sizeStr > 3) {
+          str = encryptHelper(countDiv3, this.inputCipher, true);
+        }
+
+        this.output = str;
+      } else if (this.cipher6Flag) {
+        let str = this.inputCipher;
+        let result = "";
+        function encryptHelper(openText) {
+          let crypt1 = "";
+          let crypt2 = "";
+          let crypt3 = "";
+
+          for (let i = 0; ; i++) {
+            if (i * 4 >= openText.length) {
+              break;
+            }
+            crypt3 += openText.charAt(i * 4);
+          }
+
+          for (let i = 0; ; i++) {
+            if (1 + i * 2 >= openText.length) {
+              break;
+            }
+            crypt2 += openText.charAt(1 + i * 2);
+          }
+
+          for (let i = 0; ; i++) {
+            if (2 + i * 4 >= openText.length) {
+              break;
+            }
+            crypt1 += openText.charAt(2 + i * 4);
+          }
+
+          return crypt1 + crypt2 + crypt3;
+        }
+
         result = encryptHelper(str);
         this.output = result;
       } else if (this.cipher7Flag) {
@@ -401,9 +411,11 @@ export default {
 
         for (let i = 0; i < str.length; i++) {
           let curCharInt = this.alphabet.indexOf(str.charAt(i));
-          let keyCharInt = this.alphabet.indexOf(this.paramKey.charAt(i%this.paramKey.length));
+          let keyCharInt = this.alphabet.indexOf(
+            this.paramKey.charAt(i % this.paramKey.length)
+          );
 
-          if(this.alphabet.includes(str.charAt(i))){
+          if (this.alphabet.includes(str.charAt(i))) {
             result += this.alphabet.charAt(curCharInt ^ keyCharInt);
           } else {
             result += str.charAt(i);
@@ -436,36 +448,45 @@ export default {
           let curChar = str.charAt(i);
           let alphIndex = this.alphabet.indexOf(curChar);
           if (this.alphabet.includes(curChar)) {
-          if (alphIndex >= parseInt(this.paramB)) {
-            result += this.alphabet.charAt(
-            ((alphIndex - parseInt(this.paramB)) * parseInt(this.paramA) * parseInt(this.paramA)) % this.alphabet.length);
-          } else{
-            result += this.alphabet.charAt(((alphIndex + this.alphabet.length - parseInt(this.paramB)) *
-                  parseInt(this.paramA) * parseInt(this.paramA)) % this.alphabet.length)
+            if (alphIndex >= parseInt(this.paramB)) {
+              result += this.alphabet.charAt(
+                ((alphIndex - parseInt(this.paramB)) *
+                  parseInt(this.paramA) *
+                  parseInt(this.paramA)) %
+                  this.alphabet.length
+              );
+            } else {
+              result += this.alphabet.charAt(
+                ((alphIndex + this.alphabet.length - parseInt(this.paramB)) *
+                  parseInt(this.paramA) *
+                  parseInt(this.paramA)) %
+                  this.alphabet.length
+              );
+            }
+          } else {
+            result += curChar;
           }
-        } else {
-          result += curChar;
-        }
         }
         this.output = result;
-
       } else if (this.cipher3Flag) {
-        let newAlph = "                          ".split(',');
+        let newAlph = "                          ".split(",");
         let position = parseInt(this.paramA);
         let filledLetters = 0;
         let indexKeyWord = 0;
         let str = this.inputDecipher.toUpperCase();
         let result = "";
 
-        while(filledLetters < 26){
-          if(indexKeyWord < this.paramKeyword.length){
+        while (filledLetters < 26) {
+          if (indexKeyWord < this.paramKeyword.length) {
             newAlph[position % 26] = this.paramKeyword.charAt(indexKeyWord++);
             position++;
           }
-          if(indexKeyWord == this.paramKeyword.length){
-            if(!newAlph.join('').includes(this.alphabet.charAt(filledLetters))){
-              newAlph[position%26] = this.alphabet.charAt(filledLetters);
-              position++
+          if (indexKeyWord == this.paramKeyword.length) {
+            if (
+              !newAlph.join("").includes(this.alphabet.charAt(filledLetters))
+            ) {
+              newAlph[position % 26] = this.alphabet.charAt(filledLetters);
+              position++;
             }
             filledLetters++;
           }
@@ -473,8 +494,8 @@ export default {
 
         for (let i = 0; i < str.length; i++) {
           let curChar = str.charAt(i);
-          let alphIndex = newAlph.join('').indexOf(curChar);
-          if(this.alphabet.includes(curChar)){
+          let alphIndex = newAlph.join("").indexOf(curChar);
+          if (this.alphabet.includes(curChar)) {
             result += this.alphabet.charAt(alphIndex);
           } else {
             result += curChar;
@@ -486,11 +507,13 @@ export default {
         let result = "";
         for (let i = 0; i < str.length; i++) {
           let curChar = str.charAt(i);
-          let alphIndex = this.alphabet.indexOf(curChar)
-          if(this.alphabet.includes(curChar)){
-            let keyIndex = this.paramKey.charCodeAt(i % this.paramKey.length) % 26;
-            let some = alphIndex +  (26*1000)  - this.alphabet.charCodeAt(keyIndex);
-            result += this.alphabet.charAt(some % 26)
+          let alphIndex = this.alphabet.indexOf(curChar);
+          if (this.alphabet.includes(curChar)) {
+            let keyIndex =
+              this.paramKey.charCodeAt(i % this.paramKey.length) % 26;
+            let some =
+              alphIndex + 26 * 1000 - this.alphabet.charCodeAt(keyIndex);
+            result += this.alphabet.charAt(some % 26);
           } else {
             result += curChar;
           }
@@ -501,7 +524,7 @@ export default {
         let sizeStr = str.length;
         let countDiv3 = Math.floor(sizeStr / 3);
 
-        function decryptHelper(countDiv3, crypt, b){
+        function decryptHelper(countDiv3, crypt, b) {
           let openText = "";
           let end = "";
 
@@ -511,54 +534,53 @@ export default {
 
           let t1 = crypt.length - (crypt.length % 3);
           let t2 = crypt.length;
-          end = crypt.slice(t1,t2)
-          openText = crypt.slice(0,t1);
+          end = crypt.slice(t1, t2);
+          openText = crypt.slice(0, t1);
 
           for (let i = 0; i < countDiv3; i++) {
-            crypt1 += openText.charAt(3 * i + 2); 
+            crypt1 += openText.charAt(3 * i + 2);
           }
           for (let i = 0; i < countDiv3; i++) {
-            crypt2 += openText.charAt((3 * i) + 1); 
+            crypt2 += openText.charAt(3 * i + 1);
           }
           for (let i = 0; i < countDiv3; i++) {
-            crypt3 += openText.charAt(3 * i); 
+            crypt3 += openText.charAt(3 * i);
           }
 
-          return crypt1+crypt2+crypt3+end;
+          return crypt1 + crypt2 + crypt3 + end;
         }
 
-        if(sizeStr % 3 === 0){
-          str = decryptHelper(countDiv3, str, false)
-        } else if (sizeStr > 3){
-          str = decryptHelper(countDiv3, str, true)
-        } 
+        if (sizeStr % 3 === 0) {
+          str = decryptHelper(countDiv3, str, false);
+        } else if (sizeStr > 3) {
+          str = decryptHelper(countDiv3, str, true);
+        }
 
         this.output = str;
-
       } else if (this.cipher6Flag) {
         let str = this.inputDecipher;
         let result = "";
 
-        function decryptHelper(crypt){
+        function decryptHelper(crypt) {
           let openText = "";
 
           let crypt1 = "";
           let crypt2 = "";
           let crypt3 = "";
 
-          let range1 = Math.floor((((crypt.length) - 2) / 5)) + 1;
+          let range1 = Math.floor((crypt.length - 2) / 5) + 1;
           let range2 = Math.floor(crypt.length / 2);
 
           for (let i = 0; i < range1; i++) {
-            crypt3 += crypt.charAt(i)
+            crypt3 += crypt.charAt(i);
           }
 
           for (let i = range1; i < range1 + range2; i++) {
-            crypt2 += crypt.charAt(i)
+            crypt2 += crypt.charAt(i);
           }
 
           for (let i = range1 + range2; i < crypt.length; i++) {
-            crypt1 += crypt.charAt(i)
+            crypt1 += crypt.charAt(i);
           }
 
           let prevIdent = 1;
@@ -568,16 +590,16 @@ export default {
           let i3 = 0;
 
           for (let i = 0; i < crypt.length; i++) {
-            switch(ident){
+            switch (ident) {
               case 1:
-                openText+=crypt1.charAt(i1);
+                openText += crypt1.charAt(i1);
                 i1++;
-                prevIdent=1;
-                ident=2;
+                prevIdent = 1;
+                ident = 2;
                 break;
               case 2:
-                openText+=crypt2.charAt(i2);
-                if(prevIdent === 1){
+                openText += crypt2.charAt(i2);
+                if (prevIdent === 1) {
                   ident = 3;
                 } else {
                   ident = 1;
@@ -585,32 +607,30 @@ export default {
                 i2++;
                 break;
               case 3:
-                openText+=crypt3.charAt(i3);
+                openText += crypt3.charAt(i3);
                 i3++;
                 prevIdent = 3;
                 ident = 2;
                 break;
             }
-            
           }
 
           return openText;
-
         }
 
         result = decryptHelper(str);
-        this.output = result
-
-
+        this.output = result;
       } else if (this.cipher7Flag) {
         let result = "";
         let str = this.inputDecipher.toUpperCase();
 
         for (let i = 0; i < str.length; i++) {
           let curCharInt = this.alphabet.indexOf(str.charAt(i));
-          let keyCharInt = this.alphabet.indexOf(this.paramKey.charAt(i%this.paramKey.length));
+          let keyCharInt = this.alphabet.indexOf(
+            this.paramKey.charAt(i % this.paramKey.length)
+          );
 
-          if(this.alphabet.includes(str.charAt(i))){
+          if (this.alphabet.includes(str.charAt(i))) {
             result += this.alphabet.charAt(curCharInt ^ keyCharInt);
           } else {
             result += str.charAt(i);
